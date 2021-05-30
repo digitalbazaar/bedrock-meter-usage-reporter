@@ -1,0 +1,43 @@
+{
+  "name": "bedrock-meter-usage-reporter",
+  "version": "0.0.1-0",
+  "description": "Bedrock Meter Usage Reporter",
+  "main": "./lib",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/digitalbazaar/bedrock-meter-usage-reporter"
+  },
+  "keywords": [
+    "bedrock",
+    "meter"
+  ],
+  "author": {
+    "name": "Digital Bazaar, Inc.",
+    "email": "support@digitalbazaar.com",
+    "url": "https://digitalbazaar.com/"
+  },
+  "bugs": {
+    "url": "https://github.com/digitalbazaar/bedrock-meter/issues"
+  },
+  "homepage": "https://github.com/digitalbazaar/bedrock-meter-usage-reporter",
+  "dependencies": {
+    "assert-plus": "^1.0.0"
+  },
+  "peerDependencies": {
+    "bedrock": "^4.0.0",
+    "bedrock-mongodb": "^8.0.1"
+  },
+  "directories": {
+    "lib": "./lib"
+  },
+  "devDependencies": {
+    "eslint": "^7.14.0",
+    "eslint-config-digitalbazaar": "^2.6.1"
+  },
+  "engines": {
+    "node": ">=12"
+  }
+}

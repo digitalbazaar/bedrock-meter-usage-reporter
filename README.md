@@ -1,2 +1,2 @@
 # bedrock-meter-usage-reporter
-Used to report usage to a meter service
+A Bedrock module for reporting usage to a merge service
