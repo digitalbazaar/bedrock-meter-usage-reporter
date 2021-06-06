@@ -24,7 +24,10 @@
   },
   "homepage": "https://github.com/digitalbazaar/bedrock-meter-usage-reporter",
   "dependencies": {
-    "assert-plus": "^1.0.0"
+    "abort-controller": "^3.0.0",
+    "assert-plus": "^1.0.0",
+    "delay": "^5.0.0",
+    "lodash": "^4.17.21"
   },
   "peerDependencies": {
     "bedrock": "^4.0.0",
