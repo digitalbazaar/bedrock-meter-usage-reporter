@@ -4,6 +4,8 @@
 const bedrock = require('bedrock');
 require('bedrock-mongodb');
 require('bedrock-https-agent');
+require('bedrock-server');
+require('bedrock-meter-usage-reporter');
 
 require('bedrock-test');
 bedrock.start();
