@@ -1,6 +1,6 @@
 # bedrock-meter-usage-reporter ChangeLog
 
-## 3.0.0 - 2021-08-xx
+## 3.0.0 - 2021-08-31
 
 ### Changed
 - **BREAKING**: Meter usage reporting now only requires a meter ID and not
