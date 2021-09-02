@@ -33,7 +33,7 @@
   },
   "peerDependencies": {
     "bedrock": "^4.0.0",
-    "bedrock-app-key": "digitalbazaar/bedrock-app-key#use-namespace",
+    "bedrock-app-identity": "digitalbazaar/bedrock-app-identity#use-namespace",
     "bedrock-https-agent": "^2.0.0",
     "bedrock-mongodb": "^8.0.1",
     "bedrock-server": "^2.7.0"
