@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "test": "node --preserve-symlinks test.js test",
+    "test:debug": "node --preserve-symlinks test.js test --log-level debugs",
     "coverage": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text-summary npm test",
     "coverage-ci": "cross-env NODE_ENV=test nyc --reporter=lcov npm test",
     "coverage-report": "nyc report"
@@ -11,6 +12,7 @@
   "dependencies": {
     "base58-universal": "^1.0.0",
     "bedrock": "^4.3.0",
+    "bedrock-app-key": "digitalbazaar/bedrock-app-key#use-namespace",
     "bedrock-https-agent": "^2.0.0",
     "bedrock-meter-usage-reporter": "file:..",
     "bedrock-mongodb": "^8.0.1",
