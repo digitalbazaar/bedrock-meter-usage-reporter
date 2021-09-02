@@ -12,7 +12,7 @@
   "dependencies": {
     "base58-universal": "^1.0.0",
     "bedrock": "^4.3.0",
-    "bedrock-app-key": "digitalbazaar/bedrock-app-key#use-namespace",
+    "bedrock-app-identity": "digitalbazaar/bedrock-app-identity#use-namespace",
     "bedrock-https-agent": "^2.0.0",
     "bedrock-meter-usage-reporter": "file:..",
     "bedrock-mongodb": "^8.0.1",

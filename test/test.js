@@ -5,7 +5,7 @@ const bedrock = require('bedrock');
 require('bedrock-mongodb');
 require('bedrock-https-agent');
 require('bedrock-server');
-require('bedrock-app-key');
+require('bedrock-app-identity');
 require('bedrock-meter-usage-reporter');
 
 require('bedrock-test');
