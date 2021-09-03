@@ -1,5 +1,9 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 4.0.0 - 2021-09-02
+- **BREAKING**: Meter usage no longer uses named clients and now depends
+  on `bedrock-app-identity` for identity information for services.
+
 ## 3.0.0 - 2021-08-31
 
 ### Changed
