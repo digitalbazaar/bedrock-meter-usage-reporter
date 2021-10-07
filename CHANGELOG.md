@@ -1,6 +1,6 @@
 # bedrock-meter-usage-reporter ChangeLog
 
-## 4.0.1 - TBD
+## 4.0.1 - 2021-10-07
 
 ### Fixed
 - Use `lodash.shuffle` instead of `lodash` package to reduce potential
