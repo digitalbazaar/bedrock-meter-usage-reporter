@@ -1,5 +1,11 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 4.0.1 - TBD
+
+### Fixed
+- Use `lodash.shuffle` instead of `lodash` package to reduce potential
+  vulnerability surface.
+
 ## 4.0.0 - 2021-09-02
 - **BREAKING**: Meter usage no longer uses named clients and now depends
   on `bedrock-app-identity` for identity information for services.
