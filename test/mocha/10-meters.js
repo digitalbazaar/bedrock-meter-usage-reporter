@@ -1,7 +1,6 @@
 /*!
  * Copyright (c) 2021 Digital Bazaar, Inc. All rights reserved.
  */
-
 // const {meters} = require('bedrock-meter-usage-reporter');
 
 describe.skip('meters.add()', () => {
