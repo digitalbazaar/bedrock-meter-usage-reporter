@@ -4,6 +4,7 @@
 
 ### Changed
 - Changed variable names to improve readability.
+- Make usage of `logger` consistent with other modules.
 
 ## 4.0.1 - 2021-10-07
 
