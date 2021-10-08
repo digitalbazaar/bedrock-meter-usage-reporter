@@ -1,6 +1,6 @@
 # bedrock-meter-usage-reporter ChangeLog
 
-## 4.1.0 - TBD
+## 4.1.0 - 2021-10-08
 
 ### Added
 - Add debug logging around reporter shutdown.
