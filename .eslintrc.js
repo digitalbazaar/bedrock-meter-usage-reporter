@@ -4,7 +4,8 @@ module.exports = {
     node: true
   },
   extends: [
-    'digitalbazaar'
+    'digitalbazaar',
+    'digitalbazaar/jsdoc'
   ],
   ignorePatterns: ['node_modules/']
 };
