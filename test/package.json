@@ -16,8 +16,8 @@
     "bedrock-https-agent": "^2.0.0",
     "bedrock-meter-usage-reporter": "file:..",
     "bedrock-mongodb": "^8.0.1",
-    "bedrock-server": "^2.8.0",
-    "bedrock-test": "^5.3.0",
+    "bedrock-server": "^3.0.0",
+    "bedrock-test": "^6.0.0",
     "cross-env": "^7.0.2",
     "nyc": "^15.0.1",
     "sinon": "^9.0.2"
