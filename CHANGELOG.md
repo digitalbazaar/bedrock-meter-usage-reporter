@@ -1,6 +1,6 @@
 # bedrock-meter-usage-reporter ChangeLog
 
-## 4.1.1 - TBD
+## 4.1.1 - 2021-10-08
 
 ### Fixed
 - Remove obsolete `ensureConfigOverride` setting.
