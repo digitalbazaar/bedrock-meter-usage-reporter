@@ -2,6 +2,9 @@
 
 ## 4.1.0 - TBD
 
+### Added
+- Add debug logging around reporter shutdown.
+
 ### Changed
 - Changed variable names to improve readability.
 - Make usage of `logger` consistent with other modules.
