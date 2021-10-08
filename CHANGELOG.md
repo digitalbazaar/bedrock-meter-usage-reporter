@@ -1,5 +1,10 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 4.1.0 - TBD
+
+### Changed
+- Changed variable names to improve readability.
+
 ## 4.0.1 - 2021-10-07
 
 ### Fixed
