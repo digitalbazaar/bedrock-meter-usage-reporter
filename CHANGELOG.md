@@ -1,5 +1,12 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 4.2.0 - 2021-11-xx
+
+### Added
+- Get `disabled` flag when obtaining usage if provided. Include `disabled`
+  flag in meter information in `hasAvailable` and set availability to `false`
+  if a meter is disabled.
+
 ## 4.1.1 - 2021-10-08
 
 ### Fixed
