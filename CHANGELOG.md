@@ -1,6 +1,6 @@
 # bedrock-meter-usage-reporter ChangeLog
 
-## 4.2.0 - 2021-11-xx
+## 4.2.0 - 2021-11-22
 
 ### Added
 - Get `disabled` flag when obtaining usage if provided. Include `disabled`
