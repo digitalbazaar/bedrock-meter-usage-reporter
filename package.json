@@ -1,6 +1,6 @@
 {
   "name": "bedrock-meter-usage-reporter",
-  "version": "4.1.2-0",
+  "version": "4.2.0",
   "description": "Bedrock Meter Usage Reporter",
   "main": "./lib",
   "scripts": {
