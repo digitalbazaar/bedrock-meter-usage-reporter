@@ -298,6 +298,7 @@ describe('meters.hasAvailable()', () => {
       }
       should.exist(err);
       should.not.exist(res);
+      err.name.should.equal('NotAllowedError');
     });
 });
 
