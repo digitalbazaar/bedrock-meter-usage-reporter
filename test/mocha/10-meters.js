@@ -294,7 +294,6 @@ describe('meters.hasAvailable()', () => {
           resources
         });
       } catch(e) {
-        console.log(e);
         err = e;
       }
       should.exist(err);
@@ -302,7 +301,52 @@ describe('meters.hasAvailable()', () => {
     });
 });
 
-describe.skip('meters.use()', () => {
+describe('meters.setAggregator()', () => {
+  it('should throw error if aggregator has already been set for service type',
+    async () => {
+      let res;
+      let err;
+      try {
+        res = await meters.setAggregator({
+          serviceType: 'webkms',
+          handler: () => {}
+        });
+      } catch(e) {
+        err = e;
+      }
+      should.exist(err);
+      should.not.exist(res);
+      err.message.should.equal(
+        'Aggregator already set for service type "webkms".');
+    });
+});
+
+describe('meters.use()', () => {
   it('should update the usage to report for a meter', async () => {
+    const {id: controller, keys} = getAppIdentity();
+    const invocationSigner = keys.capabilityInvocationKey.signer();
+
+    const meter = {
+      controller,
+      product: {
+        // mock ID for webkms service product
+        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
+      }
+    };
+
+    const {data} = await createMeter({meter, invocationSigner});
+    const {meter: {id: meterId}} = await meters.upsert(
+      {id: `${meterService}/${data.meter.id}`, serviceType: 'webkms'});
+
+    const operations = 10;
+    let err;
+    let result;
+    try {
+      result = await meters.use({id: meterId, operations});
+    } catch(e) {
+      err = e;
+    }
+    should.not.exist(result);
+    should.not.exist(err);
   });
 });
