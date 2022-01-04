@@ -4,9 +4,11 @@
 const bedrock = require('bedrock');
 const {meters} = require('bedrock-meter-usage-reporter');
 const {getAppIdentity} = require('bedrock-app-identity');
-const {createMeter} = require('../helpers');
+const {createMeter, cleanDB} = require('../helpers');
+const {AbortController} = require('abort-controller');
 
 const meterService = `${bedrock.config.server.baseUri}/meters`;
+const REPORTER_ABORT_CONTROLLER = new AbortController();
 
 describe('meters.upsert()', () => {
   it('should register a meter', async () => {
@@ -322,32 +324,43 @@ describe('meters.setAggregator()', () => {
     });
 });
 
-describe('meters.use()', () => {
-  it('should update the usage to report for a meter', async () => {
-    const {id: controller, keys} = getAppIdentity();
-    const invocationSigner = keys.capabilityInvocationKey.signer();
-
-    const meter = {
-      controller,
-      product: {
-        // mock ID for webkms service product
-        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
-      }
-    };
-
-    const {data} = await createMeter({meter, invocationSigner});
-    const {meter: {id: meterId}} = await meters.upsert(
-      {id: `${meterService}/${data.meter.id}`, serviceType: 'webkms'});
-
-    const operations = 10;
-    let err;
-    let result;
-    try {
-      result = await meters.use({id: meterId, operations});
-    } catch(e) {
-      err = e;
-    }
-    should.not.exist(result);
-    should.not.exist(err);
+describe('meters.reportEligibleSample()', () => {
+  beforeEach(async () => {
+    await cleanDB();
   });
+  it('should return the correct number of eligible meters to report on',
+    async () => {
+      const {id: controller, keys} = getAppIdentity();
+      const invocationSigner = keys.capabilityInvocationKey.signer();
+
+      const meter = {
+        controller,
+        product: {
+        // mock ID for webkms service product
+          id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
+        }
+      };
+
+      const {data} = await createMeter({meter, invocationSigner});
+      await meters.upsert(
+        {id: `${meterService}/${data.meter.id}`, serviceType: 'webkms'});
+
+      const operations = 10;
+      await meters.use(
+        {id: `${meterService}/${data.meter.id}`, operations});
+
+      const {signal} = REPORTER_ABORT_CONTROLLER;
+
+      let result;
+      let err;
+      try {
+        result = await meters.reportEligibleSample({signal});
+      } catch(e) {
+        err = e;
+      }
+
+      should.not.exist(err);
+      should.exist(result);
+      result.eligibleCount.should.equal(1);
+    });
 });
