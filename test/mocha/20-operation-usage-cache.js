@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2021 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2021-2022 Digital Bazaar, Inc. All rights reserved.
  */
 const {OperationUsageCache} = require(
   'bedrock-meter-usage-reporter/lib/OperationUsageCache');
