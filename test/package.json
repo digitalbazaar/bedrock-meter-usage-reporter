@@ -14,7 +14,7 @@
     "bedrock": "^4.3.0",
     "bedrock-app-identity": "^1.0.0",
     "bedrock-did-context": "^2.0.2",
-    "bedrock-did-io": "digitalbazaar/bedrock-did-io#main",
+    "bedrock-did-io": "^5.0.0",
     "bedrock-edv-storage": "digitalbazaar/bedrock-edv-storage#zcapld-update",
     "bedrock-express": "^6.1.0",
     "bedrock-https-agent": "^2.0.0",
