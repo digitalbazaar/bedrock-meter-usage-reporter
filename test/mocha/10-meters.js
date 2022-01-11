@@ -6,6 +6,7 @@ const {meters} = require('bedrock-meter-usage-reporter');
 const {getAppIdentity} = require('bedrock-app-identity');
 const {createMeter, cleanDB} = require('../helpers');
 const {AbortController} = require('abort-controller');
+const sinon = require('sinon');
 
 const meterService = `${bedrock.config.server.baseUri}/meters`;
 const REPORTER_ABORT_CONTROLLER = new AbortController();
@@ -261,8 +262,7 @@ describe('meters.hasAvailable()', () => {
         'Expected meter service type "not-a-configured-client" is not ' +
         'a configured client.');
     });
-  // Skipped until we add a mock invalid server response.
-  it.skip('should throw error if meter "serviceId" does not match client id',
+  it('should throw error if meter "serviceId" does not match "clientId"',
     async () => {
       const {id: controller, keys} = getAppIdentity();
       const invocationSigner = keys.capabilityInvocationKey.signer();
@@ -287,21 +287,35 @@ describe('meters.hasAvailable()', () => {
         storage: 50,
         operations: 80
       };
+      const {ZCAP_CLIENTS} = meters._getZcapClients();
+      const zcapClient = ZCAP_CLIENTS.get('edv');
 
+      // stub read function to return invalid serviceId
+      const stub = sinon.stub(zcapClient, 'read').callsFake(() => {
+        const badResponseData = {
+          serviceId: 'did:key:invalid-service-id',
+        };
+        return {data: badResponseData};
+      });
       let res;
       let err;
       try {
         res = await meters.hasAvailable({
           id: meterId,
-          serviceType: 'webkms',
+          serviceType: 'edv',
           resources
         });
+        stub.restore();
       } catch(e) {
         err = e;
       }
       should.exist(err);
       should.not.exist(res);
       err.name.should.equal('NotAllowedError');
+      err.message.should.equal(`Meter service ID "${err.details.serviceId}" ` +
+        `does not match the client ID "${err.details.clientId}" configured ` +
+        `for service type "edv".`);
+      err.details.httpStatusCode.should.equal(403);
     });
 });
 
