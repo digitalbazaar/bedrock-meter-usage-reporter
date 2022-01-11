@@ -1,6 +1,6 @@
 # bedrock-meter-usage-reporter ChangeLog
 
-## 5.0.0 - 2022-01-xx
+## 5.0.0 - 2022-01-11
 
 ### Changed
 - **BREAKING**: Use ezcap@2.
