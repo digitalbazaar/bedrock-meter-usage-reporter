@@ -35,7 +35,7 @@
     "bedrock-zcap-storage": "^5.0.0",
     "cross-env": "^7.0.2",
     "nyc": "^15.0.1",
-    "sinon": "^9.0.2"
+    "sinon": "^9.2.4"
   },
   "nyc": {
     "excludeNodeModules": false,
