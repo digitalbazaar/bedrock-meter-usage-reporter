@@ -261,6 +261,7 @@ describe('meters.hasAvailable()', () => {
         'Expected meter service type "not-a-configured-client" is not ' +
         'a configured client.');
     });
+  // Skipped until we add a mock invalid server response.
   it.skip('should throw error if meter "serviceId" does not match client id',
     async () => {
       const {id: controller, keys} = getAppIdentity();
