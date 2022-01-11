@@ -1,5 +1,13 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 4.2.1 - 2022-01-11
+
+### Fixed
+- Fixed a number of bugs in reporting code that surfaced with new tests.
+
+### Changed
+- Updated tests.
+
 ## 4.2.0 - 2021-11-22
 
 ### Added
