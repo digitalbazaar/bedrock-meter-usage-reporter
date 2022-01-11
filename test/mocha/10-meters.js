@@ -45,7 +45,7 @@ describe('meters.upsert()', () => {
       const meter = {
         controller,
         product: {
-        // mock ID for webkms service product
+          // mock ID for webkms service product
           id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
         }
       };
@@ -74,7 +74,7 @@ describe('meters.upsert()', () => {
       const meter = {
         controller,
         product: {
-        // mock ID for webkms service product
+          // mock ID for webkms service product
           id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
         }
       };
@@ -223,7 +223,7 @@ describe('meters.hasAvailable()', () => {
       const meter = {
         controller,
         product: {
-        // mock ID for webkms service product
+          // mock ID for webkms service product
           id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
         }
       };
@@ -270,7 +270,7 @@ describe('meters.hasAvailable()', () => {
       const meter = {
         controller,
         product: {
-        // mock ID for edv service product
+          // mock ID for edv service product
           id: 'urn:uuid:dbd15f08-ff67-11eb-893b-10bf48838a41',
         }
       };
@@ -337,7 +337,7 @@ describe('meters.reportEligibleSample()', () => {
       const meter = {
         controller,
         product: {
-        // mock ID for webkms service product
+          // mock ID for webkms service product
           id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
         }
       };
