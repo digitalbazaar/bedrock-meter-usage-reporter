@@ -7,6 +7,7 @@ const {getAppIdentity} = require('bedrock-app-identity');
 const {createMeter, cleanDB} = require('../helpers');
 const {AbortController} = require('abort-controller');
 const sinon = require('sinon');
+const database = require('bedrock-mongodb');
 
 const meterService = `${bedrock.config.server.baseUri}/meters`;
 const REPORTER_ABORT_CONTROLLER = new AbortController();
@@ -37,6 +38,41 @@ describe('meters.upsert()', () => {
     should.exist(res);
     should.not.exist(err);
     res.meter.id.should.equal(`${meterService}/${data.meter.id}`);
+  });
+  it('should return "false" if "result.n" is equal to 0', async () => {
+    const {id: controller, keys} = getAppIdentity();
+    const invocationSigner = keys.capabilityInvocationKey.signer();
+
+    const meter = {
+      controller,
+      product: {
+        // mock ID for webkms service product
+        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
+      }
+    };
+
+    const {data} = await createMeter({meter, invocationSigner});
+    const collection = database.collections['meter-usage-reporter-meter'];
+    // mock "updateOne" and set n to 0
+    const stub = sinon.stub(collection, 'updateOne').callsFake(() => {
+      const result = {
+        result: {n: 0}
+      };
+      return {result};
+    });
+    let res;
+    let err;
+    try {
+      res = await meters.upsert(
+        {id: `${meterService}/${data.meter.id}`, serviceType: 'webkms'});
+      stub.restore();
+    } catch(e) {
+      err = e;
+    }
+    should.exist(res);
+    should.not.exist(err);
+    res.should.be.a('boolean');
+    res.should.equal(false);
   });
   it('should throw error if "AGGREGATORS" does not contain given "serviceType"',
     async () => {
@@ -378,4 +414,28 @@ describe('meters.reportEligibleSample()', () => {
       should.exist(result);
       result.eligibleCount.should.equal(1);
     });
+});
+
+describe('meters.__lockRecord()', () => {
+  it('should return 0 if record does not exist', async () => {
+    const nonExistingRecord = {
+      meter: {
+        id: 'https://localhost:18443/meters/zMGZus2hKwm19SCjNMF1Hhy',
+      },
+      meta: {
+        reportLock: 0
+      }
+    };
+
+    let result;
+    let err;
+    try {
+      result = await meters._lockRecord({record: nonExistingRecord});
+    } catch(e) {
+      err = e;
+    }
+    should.not.exist(err);
+    should.exist(result);
+    result.should.equal(0);
+  });
 });
