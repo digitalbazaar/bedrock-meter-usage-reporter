@@ -47,7 +47,7 @@ describe('meters.upsert()', () => {
     should.not.exist(err);
     res.meter.id.should.equal(`${meterService}/${data.meter.id}`);
   });
-  it('should return "false" if "result.n" is equal to 0', async () => {
+  it('should return "false" if no insert nor update occurs', async () => {
     const {id: controller, keys} = getAppIdentity();
     const invocationSigner = keys.capabilityInvocationKey.signer();
 
@@ -334,7 +334,9 @@ describe('meters.hasAvailable()', () => {
       const {ZCAP_CLIENTS} = meters._getZcapClients();
       const zcapClient = ZCAP_CLIENTS.get('edv');
 
-      // stub read function to return invalid serviceId
+      // this test demonstrates that the client can handle a bad response
+      // from the server, i.e., it doesn't have to rely on the server
+      // doing the right thing.
       const stub = sinon.stub(zcapClient, 'read').callsFake(() => {
         const badResponseData = {
           serviceId: 'did:key:invalid-service-id',
