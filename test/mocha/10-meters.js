@@ -1,13 +1,13 @@
 /*!
  * Copyright (c) 2021-2022 Digital Bazaar, Inc. All rights reserved.
  */
-const bedrock = require('bedrock');
-const {meters} = require('bedrock-meter-usage-reporter');
-const {getAppIdentity} = require('bedrock-app-identity');
-const {createMeter, cleanDB} = require('../helpers');
 const {AbortController} = require('abort-controller');
-const sinon = require('sinon');
+const bedrock = require('bedrock');
+const {createMeter, cleanDB} = require('../helpers');
 const database = require('bedrock-mongodb');
+const {getAppIdentity} = require('bedrock-app-identity');
+const {meters} = require('bedrock-meter-usage-reporter');
+const sinon = require('sinon');
 
 const meterService = `${bedrock.config.server.baseUri}/meters`;
 const REPORTER_ABORT_CONTROLLER = new AbortController();
