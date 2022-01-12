@@ -19,3 +19,16 @@ config.mongodb.dropCollections.collections = [];
 
 // HTTPS Agent
 config['https-agent'].rejectUnauthorized = false;
+
+config['app-identity'].seeds.services = {
+  webkms: {
+    id: 'did:key:z6MkwZ7AXrDpuVi5duY2qvVSx1tBkGmVnmRjDvvwzoVnAzC4',
+    seedMultibase: 'z1AWrfBoQx1mbiWBfWT7eksbtJf91v2pvEpwhoHDzezfaiH',
+    serviceType: 'webkms'
+  },
+  edv: {
+    id: 'did:key:z6MkhNyDoLpNcPv5grXoJSJVJjvApd46JU5nPL6cwi88caYW',
+    seedMultibase: 'z1AgcCz4zGY5P3covUxqpaGTVs6U12H5aWH1FdyVABCwzkw',
+    serviceType: 'edv'
+  }
+};

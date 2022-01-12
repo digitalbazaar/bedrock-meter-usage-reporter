@@ -6,8 +6,6 @@ require('bedrock-mongodb');
 require('bedrock-https-agent');
 require('bedrock-server');
 const {getServiceIdentities} = require('bedrock-app-identity');
-require('bedrock-kms-http');
-require('bedrock-edv-storage');
 require('bedrock-meter-usage-reporter');
 const {handlers} = require('bedrock-meter-http');
 
