@@ -1,6 +1,6 @@
 # bedrock-meter-usage-reporter ChangeLog
 
-## 5.0.1 - 2022-01-xx
+## 5.0.1 - 2022-01-11
 
 ### Fixed
 - Fix dependencies and test dependencies.
