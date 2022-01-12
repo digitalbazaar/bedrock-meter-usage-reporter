@@ -1,5 +1,10 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 5.1.0 - 2022-TBD
+
+### Added
+- Add additional tests and expose private test helper functions in API.
+
 ## 5.0.1 - 2022-01-11
 
 ### Fixed
