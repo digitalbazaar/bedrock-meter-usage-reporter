@@ -12,6 +12,14 @@ const database = require('bedrock-mongodb');
 const meterService = `${bedrock.config.server.baseUri}/meters`;
 const REPORTER_ABORT_CONTROLLER = new AbortController();
 
+// configure usage aggregator for webkms and edv meters
+meters.setAggregator({serviceType: 'webkms', handler: () => {
+  return {storage: 0};
+}});
+meters.setAggregator({serviceType: 'edv', handler: () => {
+  return {storage: 0};
+}});
+
 describe('meters.upsert()', () => {
   it('should register a meter', async () => {
     const {id: controller, keys} = getAppIdentity();
