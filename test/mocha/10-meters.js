@@ -10,17 +10,17 @@ const {meters} = require('bedrock-meter-usage-reporter');
 const sinon = require('sinon');
 
 const meterService = `${bedrock.config.server.baseUri}/meters`;
-const REPORTER_ABORT_CONTROLLER = new AbortController();
-
-// configure usage aggregator for webkms and edv meters
-meters.setAggregator({serviceType: 'webkms', handler: () => {
-  return {storage: 0};
-}});
-meters.setAggregator({serviceType: 'edv', handler: () => {
-  return {storage: 0};
-}});
 
 describe('meters.upsert()', () => {
+  beforeEach(() => {
+    // configure usage aggregator for webkms and edv meters
+    meters.setAggregator({serviceType: 'webkms', handler: () => {
+      return {storage: 0};
+    }});
+    meters.setAggregator({serviceType: 'edv', handler: () => {
+      return {storage: 0};
+    }});
+  });
   it('should register a meter', async () => {
     const {id: controller, keys} = getAppIdentity();
     const invocationSigner = keys.capabilityInvocationKey.signer();
@@ -150,6 +150,15 @@ describe('meters.upsert()', () => {
 });
 
 describe('meters.get()', () => {
+  beforeEach(() => {
+    // configure usage aggregator for webkms and edv meters
+    meters.setAggregator({serviceType: 'webkms', handler: () => {
+      return {storage: 0};
+    }});
+    meters.setAggregator({serviceType: 'edv', handler: () => {
+      return {storage: 0};
+    }});
+  });
   it('should get meter record by ID', async () => {
     const {id: controller, keys} = getAppIdentity();
     const invocationSigner = keys.capabilityInvocationKey.signer();
@@ -207,6 +216,15 @@ describe('meters.get()', () => {
 });
 
 describe('meters.hasAvailable()', () => {
+  beforeEach(() => {
+    // configure usage aggregator for webkms and edv meters
+    meters.setAggregator({serviceType: 'webkms', handler: () => {
+      return {storage: 0};
+    }});
+    meters.setAggregator({serviceType: 'edv', handler: () => {
+      return {storage: 0};
+    }});
+  });
   it('checks usage against what is available', async () => {
     const {id: controller, keys} = getAppIdentity();
     const invocationSigner = keys.capabilityInvocationKey.signer();
@@ -366,6 +384,15 @@ describe('meters.hasAvailable()', () => {
 });
 
 describe('meters.setAggregator()', () => {
+  beforeEach(() => {
+    // configure usage aggregator for webkms and edv meters
+    meters.setAggregator({serviceType: 'webkms', handler: () => {
+      return {storage: 0};
+    }});
+    meters.setAggregator({serviceType: 'edv', handler: () => {
+      return {storage: 0};
+    }});
+  });
   it('should throw error if aggregator has already been set for service type',
     async () => {
       let res;
@@ -386,7 +413,16 @@ describe('meters.setAggregator()', () => {
 });
 
 describe('meters.reportEligibleSample()', () => {
+  let REPORTER_ABORT_CONTROLLER;
   beforeEach(async () => {
+    REPORTER_ABORT_CONTROLLER = new AbortController();
+    // configure usage aggregator for webkms and edv meters
+    meters.setAggregator({serviceType: 'webkms', handler: () => {
+      return {storage: 0};
+    }});
+    meters.setAggregator({serviceType: 'edv', handler: () => {
+      return {storage: 0};
+    }});
     await cleanDB();
   });
   it('should return the correct number of eligible meters to report on',
@@ -419,11 +455,84 @@ describe('meters.reportEligibleSample()', () => {
       } catch(e) {
         err = e;
       }
-
       should.not.exist(err);
       should.exist(result);
       result.eligibleCount.should.equal(1);
     });
+  it('should not report if signal is aborted', async () => {
+    const {id: controller, keys} = getAppIdentity();
+    const invocationSigner = keys.capabilityInvocationKey.signer();
+
+    const meter = {
+      controller,
+      product: {
+        // mock ID for webkms service product
+        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
+      }
+    };
+
+    const {data} = await createMeter({meter, invocationSigner});
+    const meterId = `${meterService}/${data.meter.id}`;
+    await meters.upsert({id: meterId, serviceType: 'webkms'});
+
+    const operations = 10;
+    await meters.use({id: meterId, operations});
+
+    const {signal} = REPORTER_ABORT_CONTROLLER;
+    // Set signal.aborted to true
+    REPORTER_ABORT_CONTROLLER.abort();
+
+    await meters.reportEligibleSample({signal});
+
+    const collection = database.collections['meter-usage-reporter-meter'];
+    let result;
+    let err;
+    try {
+      result = await collection.findOne({'meter.id': meterId});
+    } catch(e) {
+      err = e;
+    }
+    should.not.exist(err);
+    should.exist(result);
+    result.meta.reported.should.equal(0);
+  });
+  it('should not report if there are no aggregrators', async () => {
+    const {id: controller, keys} = getAppIdentity();
+    const invocationSigner = keys.capabilityInvocationKey.signer();
+
+    const meter = {
+      controller,
+      product: {
+        // mock ID for webkms service product
+        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
+      }
+    };
+
+    const {data} = await createMeter({meter, invocationSigner});
+    const meterId = `${meterService}/${data.meter.id}`;
+    await meters.upsert({id: meterId, serviceType: 'webkms'});
+
+    const operations = 10;
+    await meters.use({id: meterId, operations});
+
+    const {signal} = REPORTER_ABORT_CONTROLLER;
+    // reset aggregrators
+    meters.resetAggregrators();
+
+    await meters.reportEligibleSample({signal});
+
+    const collection = database.collections['meter-usage-reporter-meter'];
+    let result;
+    let err;
+    try {
+      result = await collection.findOne({'meter.id': meterId});
+    } catch(e) {
+      err = e;
+    }
+    should.not.exist(err);
+    should.exist(result);
+    result.meta.reported.should.equal(0);
+  });
 });
 
 describe('meters.__lockRecord()', () => {
