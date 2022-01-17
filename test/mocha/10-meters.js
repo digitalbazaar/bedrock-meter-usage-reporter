@@ -47,41 +47,6 @@ describe('meters.upsert()', () => {
     should.not.exist(err);
     res.meter.id.should.equal(`${meterService}/${data.meter.id}`);
   });
-  it('should return "false" if no insert nor update occurs', async () => {
-    const {id: controller, keys} = getAppIdentity();
-    const invocationSigner = keys.capabilityInvocationKey.signer();
-
-    const meter = {
-      controller,
-      product: {
-        // mock ID for webkms service product
-        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
-      }
-    };
-
-    const {data} = await createMeter({meter, invocationSigner});
-    const collection = database.collections['meter-usage-reporter-meter'];
-    // mock "updateOne" and set n to 0
-    const stub = sinon.stub(collection, 'updateOne').callsFake(() => {
-      const result = {
-        result: {n: 0}
-      };
-      return {result};
-    });
-    let res;
-    let err;
-    try {
-      res = await meters.upsert(
-        {id: `${meterService}/${data.meter.id}`, serviceType: 'webkms'});
-      stub.restore();
-    } catch(e) {
-      err = e;
-    }
-    should.exist(res);
-    should.not.exist(err);
-    res.should.be.a('boolean');
-    res.should.equal(false);
-  });
   it('should throw error if "AGGREGATORS" does not contain given "serviceType"',
     async () => {
       const {id: controller, keys} = getAppIdentity();
