@@ -11,12 +11,9 @@
     "coverage-report": "c8 report"
   },
   "dependencies": {
-    "@digitalbazaar/ed25519-signature-2020": "^3.0.0",
-    "@digitalbazaar/ezcap": "^2.0.2",
-    "abort-controller": "^3.0.0",
-    "@bedrock/core": "^5.0.0",
     "@bedrock/app-identity": "^2.0.0",
-    "@bedrock/did-io": "^6.0.0",
+    "@bedrock/core": "^5.0.0",
+    "@bedrock/did-io": "^7.0.0",
     "@bedrock/express": "^7.0.0",
     "@bedrock/https-agent": "^3.0.0",
     "@bedrock/jsonld-document-loader": "^2.0.0",
@@ -27,6 +24,9 @@
     "@bedrock/server": "^4.0.0",
     "@bedrock/test": "^7.0.0",
     "@bedrock/zcap-storage": "^6.0.0",
+    "@digitalbazaar/ed25519-signature-2020": "^3.0.0",
+    "@digitalbazaar/ezcap": "^2.0.2",
+    "abort-controller": "^3.0.0",
     "c8": "^7.11.0",
     "cross-env": "^7.0.2",
     "sinon": "^9.2.4"
