@@ -1,15 +1,17 @@
 /*!
  * Copyright (c) 2021-2022 Digital Bazaar, Inc. All rights reserved.
  */
-const bedrock = require('bedrock');
-require('bedrock-mongodb');
-require('bedrock-https-agent');
-require('bedrock-server');
-const {getServiceIdentities} = require('bedrock-app-identity');
-require('bedrock-meter-usage-reporter');
-const {handlers} = require('bedrock-meter-http');
+import * as bedrock from '@bedrock/core';
+import '@bedrock/express';
+import '@bedrock/https-agent';
+import '@bedrock/meter';
+import '@bedrock/mongodb';
+import '@bedrock/server';
+import {getServiceIdentities} from '@bedrock/app-identity';
+import {handlers} from '@bedrock/meter-http';
+import '@bedrock/meter-usage-reporter';
 
-const mockData = require('./mock-product-id-map');
+import {mockData} from './mock-product-id-map.js';
 
 bedrock.events.on('bedrock.init', async () => {
   /* Handlers need to be added before `bedrock.start` is called. These are
@@ -32,5 +34,5 @@ bedrock.events.on('bedrock.init', async () => {
   handlers.setUseHandler({handler: ({meter} = {}) => ({meter})});
 });
 
-require('bedrock-test');
+import '@bedrock/test';
 bedrock.start();

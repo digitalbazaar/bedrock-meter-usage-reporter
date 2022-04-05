@@ -1,26 +1,24 @@
 /*!
  * Copyright (c) 2021-2022 Digital Bazaar, Inc. All rights reserved.
  */
-'use strict';
+import * as database from '@bedrock/mongodb';
+import {agent} from '@bedrock/https-agent';
+import {config} from '@bedrock/core';
+import {Ed25519Signature2020} from '@digitalbazaar/ed25519-signature-2020';
+import {ZcapClient} from '@digitalbazaar/ezcap';
 
-const bedrock = require('bedrock');
-const {Ed25519Signature2020} = require('@digitalbazaar/ed25519-signature-2020');
-const {agent} = require('bedrock-https-agent');
-const {ZcapClient} = require('@digitalbazaar/ezcap');
-const database = require('bedrock-mongodb');
-
-exports.createMeter = async ({meter, invocationSigner}) => {
+export async function createMeter({meter, invocationSigner}) {
   const zcapClient = new ZcapClient({
     agent,
     invocationSigner,
     SuiteClass: Ed25519Signature2020
   });
 
-  const meterService = `${bedrock.config.server.baseUri}/meters`;
+  const meterService = `${config.server.baseUri}/meters`;
 
   return zcapClient.write({url: meterService, json: meter});
-};
+}
 
-exports.cleanDB = async () => {
+export async function cleanDB() {
   await database.collections['meter-usage-reporter-meter'].deleteMany({});
-};
+}

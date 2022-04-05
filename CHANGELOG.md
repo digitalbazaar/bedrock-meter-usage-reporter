@@ -1,5 +1,13 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 6.0.0 - 2022-04-xx
+
+### Changed
+- **BREAKING**: Rename package to `@bedrock/meter-usage-reporter`.
+- **BREAKING**: Convert to module (ESM).
+- **BREAKING**: Remove default export.
+- **BREAKING**: Require node 14.x.
+
 ## 5.1.0 - 2022-01-17
 
 ### Added
