@@ -1,8 +1,7 @@
 /*!
  * Copyright (c) 2021-2022 Digital Bazaar, Inc. All rights reserved.
  */
-const {OperationUsageCache} = require(
-  'bedrock-meter-usage-reporter/lib/OperationUsageCache');
+import {OperationUsageCache} from '@bedrock/meter-usage-reporter';
 
 describe('OperationUsageCache', () => {
   it('should insert operation usage records into usageMap', async () => {
