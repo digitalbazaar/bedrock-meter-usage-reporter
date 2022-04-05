@@ -1,6 +1,6 @@
 # bedrock-meter-usage-reporter ChangeLog
 
-## 6.0.0 - 2022-04-xx
+## 6.0.0 - 2022-04-05
 
 ### Changed
 - **BREAKING**: Rename package to `@bedrock/meter-usage-reporter`.
