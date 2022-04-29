@@ -1,5 +1,15 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 7.0.0 - 2022-04-xx
+
+### Changed
+- **BREAKING**: Update peer deps:
+  - `@bedrock/core@6`
+  - `@bedrock/app-identity@3`
+  - `@bedrock/https-agent@4`
+  - `@bedrock/mongodb@10`
+  - `@bedrock/server@5`.
+
 ## 6.0.0 - 2022-04-05
 
 ### Changed
