@@ -1,6 +1,6 @@
 # bedrock-meter-usage-reporter ChangeLog
 
-## 7.0.0 - 2022-04-xx
+## 7.0.0 - 2022-04-29
 
 ### Changed
 - **BREAKING**: Update peer deps:
