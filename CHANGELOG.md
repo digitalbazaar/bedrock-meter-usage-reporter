@@ -1,5 +1,10 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 7.0.1 - 2022-xx-xx
+
+### Changed
+- Use `package.json` `files` field.
+
 ## 7.0.0 - 2022-04-29
 
 ### Changed
