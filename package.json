@@ -4,6 +4,9 @@
   "type": "module",
   "description": "Bedrock Meter Usage Reporter",
   "main": "./lib/index.js",
+  "files": [
+    "lib/**/*.js"
+  ],
   "scripts": {
     "lint": "eslint ."
   },
