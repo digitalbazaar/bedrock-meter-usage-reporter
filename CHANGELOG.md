@@ -7,6 +7,7 @@
 - **BREAKING**: Dependencies require Web Crypto API. Node.js 14 users need to
   install an appropriate polyfill.
 - Use `package.json` `files` field.
+- Lint module.
 
 ## 7.0.0 - 2022-04-29
 
