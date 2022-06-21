@@ -3,9 +3,8 @@
 ## 8.0.0 - 2022-xx-xx
 
 ### Changed
+- **BREAKING**: Require Node.js >=16.
 - Updated dependencies.
-- **BREAKING**: Dependencies require Web Crypto API. Node.js 14 users need to
-  install an appropriate polyfill.
 - Use `package.json` `files` field.
 - Lint module.
 

@@ -1,8 +1,6 @@
 /*!
  * Copyright (c) 2021-2022 Digital Bazaar, Inc. All rights reserved.
  */
-import './polyfills.js';
-
 import * as bedrock from '@bedrock/core';
 import '@bedrock/express';
 import '@bedrock/https-agent';
