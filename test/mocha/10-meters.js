@@ -504,7 +504,7 @@ describe('meters.__lockRecord()', () => {
   it('should return 0 if record does not exist', async () => {
     const nonExistingRecord = {
       meter: {
-        id: 'https://localhost:18443/meters/zMGZus2hKwm19SCjNMF1Hhy',
+        id: 'https://localhost:18443/meters/z1A1WHsjMmHdWUruTEu5jRZYX',
       },
       meta: {
         reportLock: 0
