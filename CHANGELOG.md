@@ -1,5 +1,11 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 9.0.0 -
+
+### Changed
+- **BREAKING**: Use `@bedrock/mongodb@11`.
+- Change to the way we check for if a meter is locked. 
+
 ## 8.0.0 - 2022-06-21
 
 ### Changed
