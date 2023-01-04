@@ -39,7 +39,7 @@
     "@bedrock/app-identity": "^4.0.0",
     "@bedrock/core": "^6.0.1",
     "@bedrock/https-agent": "^4.0.0",
-    "@bedrock/mongodb": "^10.0.0",
+    "@bedrock/mongodb": "^11.0.0",
     "@bedrock/server": "^5.0.0"
   },
   "directories": {
