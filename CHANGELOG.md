@@ -6,6 +6,7 @@
 - **BREAKING**: Drop support for Node.js < 18.
 - Use `@digitalbazaar/ed25519-signature-2020@5`.
 - Use `@digitalbazaar/ezcap@4`.
+- Use `delay@6`. This version requires Node.js 16+.
 
 ## 8.0.0 - 2022-06-21
 
