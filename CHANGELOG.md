@@ -1,5 +1,10 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 9.0.0 - 2023-09-xx
+
+### Changed
+- **BREAKING**: Drop support for Node.js < 18.
+
 ## 8.0.0 - 2022-06-21
 
 ### Changed
