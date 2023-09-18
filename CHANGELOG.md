@@ -4,6 +4,7 @@
 
 ### Changed
 - **BREAKING**: Drop support for Node.js < 18.
+- Use `@digitalbazaar/ed25519-signature-2020@5`.
 
 ## 8.0.0 - 2022-06-21
 
