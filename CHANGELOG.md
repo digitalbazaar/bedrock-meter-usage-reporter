@@ -1,5 +1,10 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 9.0.1 - 2023-09-xx
+
+### Fixed
+- Update usage of `delay.range` API to `rangeDelay`.
+
 ## 9.0.0 - 2023-09-18
 
 ### Changed
