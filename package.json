@@ -1,6 +1,6 @@
 {
   "name": "@bedrock/meter-usage-reporter",
-  "version": "9.0.2",
+  "version": "9.0.3-0",
   "type": "module",
   "description": "Bedrock Meter Usage Reporter",
   "main": "./lib/index.js",
