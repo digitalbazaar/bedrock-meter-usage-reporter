@@ -1,6 +1,6 @@
 # bedrock-meter-usage-reporter ChangeLog
 
-## 9.0.2 - 2025-mm-dd
+## 9.0.2 - 2025-03-04
 
 ### Fixed
 - Remove unused `background` option from mongodb index creation.
