@@ -1,5 +1,10 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 9.0.3 - 2025-03-04
+
+### Fixed
+- Do not pass `writeOptions` in database calls.
+
 ## 9.0.2 - 2025-03-04
 
 ### Fixed
