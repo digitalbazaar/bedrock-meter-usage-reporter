@@ -28,8 +28,8 @@
   },
   "homepage": "https://github.com/digitalbazaar/bedrock-meter-usage-reporter",
   "dependencies": {
-    "@digitalbazaar/ed25519-signature-2020": "^5.2.0",
-    "@digitalbazaar/ezcap": "^4.0.0",
+    "@digitalbazaar/ed25519-signature-2020": "^5.4.0",
+    "@digitalbazaar/ezcap": "^4.1.0",
     "abort-controller": "^3.0.0",
     "assert-plus": "^1.0.0",
     "delay": "^6.0.0",
@@ -37,20 +37,19 @@
   },
   "peerDependencies": {
     "@bedrock/app-identity": "^4.0.0",
-    "@bedrock/core": "^6.0.1",
-    "@bedrock/https-agent": "^4.0.0",
-    "@bedrock/mongodb": "^10.0.0",
-    "@bedrock/server": "^5.0.0"
+    "@bedrock/core": "^6.3.0",
+    "@bedrock/https-agent": "^4.1.0",
+    "@bedrock/mongodb": "^11.0.0",
+    "@bedrock/server": "^5.1.0"
   },
   "directories": {
     "lib": "./lib"
   },
   "devDependencies": {
-    "eslint": "^8.18.0",
-    "eslint-config-digitalbazaar": "^3.0.0",
-    "eslint-plugin-jsdoc": "^39.3.3",
-    "eslint-plugin-unicorn": "^42.0.0",
-    "jsdoc-to-markdown": "^7.1.1"
+    "eslint": "^8.57.1",
+    "eslint-config-digitalbazaar": "^5.2.0",
+    "eslint-plugin-jsdoc": "^50.6.3",
+    "eslint-plugin-unicorn": "^56.0.1"
   },
   "engines": {
     "node": ">=18"
