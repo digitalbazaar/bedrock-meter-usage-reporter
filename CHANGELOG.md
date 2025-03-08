@@ -2,6 +2,20 @@
 
 ## 10.0.0 - 2025-03-xx
 
+### Changed
+- Update dependencies.
+  - `@digitalbazaar/ed25519-signature-2020@5.4.0`.
+  - `@digitalbazaar/ezcap@4.1.0`.
+- Update peer dependencies.
+  - `@bedrock/core@6.3.0`.
+  - `@bedrock/https-agent@4.1.0`.
+  - **BREAKING**: `@bedrock/mongodb@11`.
+    - Use MongoDB driver 6.x and update error names and details.
+    - See changelog for details.
+  - `@bedrock/server@5.1.0`.
+- Update dev dependencies.
+- Update test dependencies.
+
 ### Fixed
 - Use `result.*Count` to enable newer mongodb driver versions.
 
