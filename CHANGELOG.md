@@ -1,5 +1,10 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 10.0.0 - 2025-03-xx
+
+### Fixed
+- Use `result.*Count` to enable newer mongodb driver versions.
+
 ## 9.0.3 - 2025-03-04
 
 ### Fixed
