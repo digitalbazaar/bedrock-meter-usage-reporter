@@ -2,13 +2,13 @@
  * Copyright (c) 2021-2022 Digital Bazaar, Inc. All rights reserved.
  */
 import * as bedrock from '@bedrock/core';
+import {getServiceIdentities} from '@bedrock/app-identity';
+import {handlers} from '@bedrock/meter-http';
 import '@bedrock/express';
 import '@bedrock/https-agent';
 import '@bedrock/meter';
 import '@bedrock/mongodb';
 import '@bedrock/server';
-import {getServiceIdentities} from '@bedrock/app-identity';
-import {handlers} from '@bedrock/meter-http';
 import '@bedrock/meter-usage-reporter';
 
 import {mockData} from './mock-product-id-map.js';

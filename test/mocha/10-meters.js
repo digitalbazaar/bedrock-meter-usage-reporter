@@ -3,8 +3,8 @@
  */
 import * as bedrock from '@bedrock/core';
 import * as database from '@bedrock/mongodb';
+import {cleanDB, createMeter} from '../helpers.js';
 import {AbortController} from 'abort-controller';
-import {createMeter, cleanDB} from '../helpers.js';
 import {getAppIdentity} from '@bedrock/app-identity';
 import {meters} from '@bedrock/meter-usage-reporter';
 import sinon from 'sinon';
