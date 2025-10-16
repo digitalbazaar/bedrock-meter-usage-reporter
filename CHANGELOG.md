@@ -1,6 +1,6 @@
 # bedrock-meter-usage-reporter ChangeLog
 
-## 10.1.0 - 2025-mm-dd
+## 10.1.0 - 2025-10-16
 
 ### Changed
 - Replace `lodash.shuffle` with local shuffle implementation.
