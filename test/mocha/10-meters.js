@@ -29,7 +29,7 @@ describe('meters.upsert()', () => {
       controller,
       product: {
         // mock ID for webkms service product
-        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
+        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41'
       }
     };
 
@@ -56,7 +56,7 @@ describe('meters.upsert()', () => {
         controller,
         product: {
           // mock ID for webkms service product
-          id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
+          id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41'
         }
       };
 
@@ -85,7 +85,7 @@ describe('meters.upsert()', () => {
         controller,
         product: {
           // mock ID for webkms service product
-          id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
+          id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41'
         }
       };
 
@@ -132,7 +132,7 @@ describe('meters.get()', () => {
       controller,
       product: {
         // mock ID for webkms service product
-        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
+        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41'
       }
     };
     const {data} = await createMeter({meter, invocationSigner});
@@ -198,7 +198,7 @@ describe('meters.hasAvailable()', () => {
       controller,
       product: {
         // mock ID for webkms service product
-        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
+        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41'
       }
     };
     const {data} = await createMeter({meter, invocationSigner});
@@ -252,7 +252,7 @@ describe('meters.hasAvailable()', () => {
         controller,
         product: {
           // mock ID for webkms service product
-          id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
+          id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41'
         }
       };
       const {data} = await createMeter({meter, invocationSigner});
@@ -298,7 +298,7 @@ describe('meters.hasAvailable()', () => {
         controller,
         product: {
           // mock ID for edv service product
-          id: 'urn:uuid:dbd15f08-ff67-11eb-893b-10bf48838a41',
+          id: 'urn:uuid:dbd15f08-ff67-11eb-893b-10bf48838a41'
         }
       };
       const {data} = await createMeter({meter, invocationSigner});
@@ -322,7 +322,7 @@ describe('meters.hasAvailable()', () => {
       // doing the right thing.
       const stub = sinon.stub(zcapClient, 'read').callsFake(() => {
         const badResponseData = {
-          serviceId: 'did:key:invalid-service-id',
+          serviceId: 'did:key:invalid-service-id'
         };
         return {data: badResponseData};
       });
@@ -399,7 +399,7 @@ describe('meters.reportEligibleSample()', () => {
         controller,
         product: {
           // mock ID for webkms service product
-          id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
+          id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41'
         }
       };
 
@@ -432,7 +432,7 @@ describe('meters.reportEligibleSample()', () => {
       controller,
       product: {
         // mock ID for webkms service product
-        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
+        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41'
       }
     };
 
@@ -469,7 +469,7 @@ describe('meters.reportEligibleSample()', () => {
       controller,
       product: {
         // mock ID for webkms service product
-        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41',
+        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41'
       }
     };
 
@@ -504,7 +504,7 @@ describe('meters.__lockRecord()', () => {
   it('should return 0 if record does not exist', async () => {
     const nonExistingRecord = {
       meter: {
-        id: 'https://localhost:18443/meters/z1A1WHsjMmHdWUruTEu5jRZYX',
+        id: 'https://localhost:18443/meters/z1A1WHsjMmHdWUruTEu5jRZYX'
       },
       meta: {
         reportLock: 0
