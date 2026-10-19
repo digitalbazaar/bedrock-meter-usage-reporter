@@ -1,5 +1,14 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 10.2.0 - 2026-mm-dd
+
+### Added
+- Add `intervalFuzzTime` as a configurable option for applying randomized
+  fuzzing to the reporting interval to spread the reporting load.
+
+### Changed
+- Update dependencies.
+
 ## 10.1.0 - 2025-10-16
 
 ### Changed
