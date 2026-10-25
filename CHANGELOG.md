@@ -1,6 +1,6 @@
 # bedrock-meter-usage-reporter ChangeLog
 
-## 10.2.0 - 2026-mm-dd
+## 10.2.0 - 2026-10-25
 
 ### Added
 - Add `intervalFuzzTime` as a configurable option for applying randomized
