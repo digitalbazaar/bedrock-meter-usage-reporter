@@ -1,5 +1,24 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 10.3.0 - 2026-mm-dd
+
+### Added
+- Add local estimates for meter usage to improve performance and enforcement
+  of resource limits. Enforcement of limits is now possible without relying on
+  remote usage reporting to run, allowing the reporting to continue to run on
+  a relatively slower schedule than is needed for sufficiently accurate limit
+  enforcement. Storage usage is now tracked along with operations via the
+  existing operation cache -- and this cache is now periodically flushed (on
+  a short duration schedule) so that local estimates can be used to check
+  availability. When remote usage reporting does run, the accurate aggregated
+  results are used to update local estimates, improving accuracy. Additionally,
+  remote usage will still be fetched in parallel when checking for resource
+  availability (for new resource creation), however, if a meter has been
+  previously stored, the remote result it is not awaited as the local meter
+  usage estimates can be used instead. Note: As a side effect, new meters are
+  automatically upserted, such that dependent services may be able to remove
+  now-redundant calls to `meters.upsert()`.
+
 ## 10.2.0 - 2026-10-25
 
 ### Added
