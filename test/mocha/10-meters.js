@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2021-2022 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2021-2026 Digital Bazaar, Inc.
  */
 import * as bedrock from '@bedrock/core';
 import * as database from '@bedrock/mongodb';
@@ -8,6 +8,8 @@ import {AbortController} from 'abort-controller';
 import {getAppIdentity} from '@bedrock/app-identity';
 import {meters} from '@bedrock/meter-usage-reporter';
 import sinon from 'sinon';
+
+import {OperationUsageCache} from '@bedrock/meter-usage-reporter';
 
 const meterService = `${bedrock.config.server.baseUri}/meters`;
 
@@ -203,16 +205,23 @@ describe('meters.hasAvailable()', () => {
     };
     const {data} = await createMeter({meter, invocationSigner});
     // insert meter
-    const {meter: meterInfo} = await meters.upsert({
+    const {meter: {id: meterId}} = await meters.upsert({
       id: `${meterService}/${data.meter.id}`,
-      serviceType: 'webkms'
+      serviceType: 'webkms',
+      limits: {
+        operations: 180,
+        storage: 150
+      }
     });
-    const {id: meterId} = meterInfo;
+    // add usage
+    const operationUsageCache = new OperationUsageCache();
+    operationUsageCache.use({id: meterId, operations: 20, storage: 10});
+    await operationUsageCache.flush();
 
     // resources to check against what's available
     const resources = {
-      storage: 50,
-      operations: 80
+      operations: 80,
+      storage: 50
     };
     let res;
     let err;
@@ -230,20 +239,68 @@ describe('meters.hasAvailable()', () => {
     should.exist(res.meter);
     res.meter.should.be.an('object');
     res.meter.id.should.equal(meterId);
-    const {usage} = res.meter;
+    const {limits, usage} = res.meter;
+    should.exist(limits);
+    limits.should.be.an('object');
+    limits.should.have.keys(['storage', 'operations']);
+    limits.operations.should.equal(180);
+    limits.storage.should.equal(150);
     should.exist(usage);
     usage.should.be.an('object');
-    usage.should.have.key('available');
+    usage.should.have.keys(['storage', 'operations', 'available']);
+    usage.operations.should.equal(20);
+    usage.storage.should.equal(10);
     usage.available.should.be.an('object');
     usage.available.should.have.keys(['storage', 'operations']);
-    const {storage, operations} = usage.available;
-    storage.should.equal(100);
-    operations.should.equal(100);
+    usage.available.operations.should.equal(160);
+    usage.available.storage.should.equal(140);
     should.exist(res.hasAvailable);
     res.hasAvailable.should.be.a('boolean');
     res.hasAvailable.should.equal(true);
   });
-  it('should throw error if expected service type is not a configured client',
+  it('should throw error on unexpected service type for new meter',
+    async () => {
+      const {id: controller, keys} = getAppIdentity();
+      const invocationSigner = keys.capabilityInvocationKey.signer();
+
+      const meter = {
+        controller,
+        product: {
+          // mock ID for webkms service product
+          id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41'
+        }
+      };
+      const {data} = await createMeter({meter, invocationSigner});
+      // do not insert meter to ensure remote end is checked
+      const meterId = `${meterService}/${data.meter.id}`;
+
+      // resources to check against what's available
+      const resources = {
+        storage: 50,
+        operations: 80
+      };
+
+      let res;
+      let err;
+      try {
+        res = await meters.hasAvailable({
+          id: meterId,
+          serviceType: 'not-a-configured-client',
+          resources
+        });
+      } catch(e) {
+        err = e;
+      }
+      should.exist(err);
+      should.not.exist(res);
+      err.name.should.equal('NotAllowedError');
+      err.details.url.should.equal(`${meterId}/usage`);
+      err.details.httpStatusCode.should.equal(403);
+      err.message.should.equal(
+        'Expected meter service type "not-a-configured-client" is not ' +
+        'a configured client.');
+    });
+  it('should throw error on expected service type for existing meter',
     async () => {
       const {id: controller, keys} = getAppIdentity();
       const invocationSigner = keys.capabilityInvocationKey.signer();
@@ -282,12 +339,10 @@ describe('meters.hasAvailable()', () => {
       }
       should.exist(err);
       should.not.exist(res);
-      err.name.should.equal('NotAllowedError');
-      err.details.url.should.equal(`${meterId}/usage`);
-      err.details.httpStatusCode.should.equal(403);
+      err.name.should.equal('DataError');
+      err.details.httpStatusCode.should.equal(400);
       err.message.should.equal(
-        'Expected meter service type "not-a-configured-client" is not ' +
-        'a configured client.');
+        'Expected meter service type "not-a-configured-client".');
     });
   it('should throw error if meter "serviceId" does not match "clientId"',
     async () => {
@@ -302,13 +357,8 @@ describe('meters.hasAvailable()', () => {
         }
       };
       const {data} = await createMeter({meter, invocationSigner});
-
-      // insert meter
-      const {meter: meterInfo} = await meters.upsert({
-        id: `${meterService}/${data.meter.id}`,
-        serviceType: 'edv'
-      });
-      const {id: meterId} = meterInfo;
+      // do not insert meter to ensure remote end is checked
+      const meterId = `${meterService}/${data.meter.id}`;
       // resources to check against what's available
       const resources = {
         storage: 50,

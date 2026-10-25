@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2021-2022 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2021-2026 Digital Bazaar, Inc.
  */
 import {OperationUsageCache} from '@bedrock/meter-usage-reporter';
 
@@ -19,8 +19,34 @@ describe('OperationUsageCache', () => {
     operationUsageCache.use({id: id2, operations: op2});
 
     operationUsageCache.usageMap.size.should.equal(2);
-    operationUsageCache.usageMap.get(id1).should.eql({operations: op1});
-    operationUsageCache.usageMap.get(id2).should.eql({operations: op2});
+    operationUsageCache.usageMap.get(id1).should.eql({
+      operations: op1, storage: 0
+    });
+    operationUsageCache.usageMap.get(id2).should.eql({
+      operations: op2, storage: 0
+    });
+  });
+  it('should insert storage usage records into usageMap', async () => {
+    const operationUsageCache = new OperationUsageCache();
+
+    operationUsageCache.maxSize.should.equal(1000);
+    operationUsageCache.usageMap.size.should.equal(0);
+
+    const id1 = 'test-1';
+    const id2 = 'test-2';
+    const s1 = 200;
+    const s2 = 400;
+
+    operationUsageCache.use({id: id1, storage: s1});
+    operationUsageCache.use({id: id2, storage: s2});
+
+    operationUsageCache.usageMap.size.should.equal(2);
+    operationUsageCache.usageMap.get(id1).should.eql({
+      operations: 0, storage: s1
+    });
+    operationUsageCache.usageMap.get(id2).should.eql({
+      operations: 0, storage: s2
+    });
   });
   it('should update operation usage if the id already exists in usageMap',
     async () => {
@@ -30,12 +56,16 @@ describe('OperationUsageCache', () => {
       operationUsageCache.use({id, operations: op1});
 
       operationUsageCache.usageMap.size.should.equal(1);
-      operationUsageCache.usageMap.get(id).should.eql({operations: op1});
+      operationUsageCache.usageMap.get(id).should.eql({
+        operations: op1, storage: 0});
 
       const op2 = 1000;
-      operationUsageCache.use({id, operations: op2});
+      const storage = 100;
+      operationUsageCache.use({id, operations: op2, storage});
       operationUsageCache.usageMap.size.should.equal(1);
-      operationUsageCache.usageMap.get(id).should.eql({operations: op1 + op2});
+      operationUsageCache.usageMap.get(id).should.eql({
+        operations: op1 + op2, storage
+      });
     });
   it('should flush the usageMap when "usageMap.size" equals maxSize',
     async () => {
@@ -47,12 +77,17 @@ describe('OperationUsageCache', () => {
       const id1 = 'test-1';
       const id2 = 'test-2';
       const id3 = 'test-3';
-      const op = 100;
-      operationUsageCache.use({id: id1, operations: op});
-      operationUsageCache.use({id: id2, operations: op});
-      operationUsageCache.use({id: id3, operations: op});
+      const op1 = 100;
+      const op2 = 987;
+      const s1 = 123;
+      const s2 = 345;
+      operationUsageCache.use({id: id1, operations: op1});
+      operationUsageCache.use({id: id2, operations: 0, storage: s1});
+      operationUsageCache.use({id: id3, operations: op2, storage: s2});
 
       operationUsageCache.usageMap.size.should.equal(1);
-      operationUsageCache.usageMap.get(id3).should.eql({operations: op});
+      operationUsageCache.usageMap.get(id3).should.eql({
+        operations: op2, storage: s2
+      });
     });
 });
