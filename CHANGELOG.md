@@ -1,5 +1,10 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 10.3.3 - 2026-10-dd
+
+### Fixed
+- Fix test function for flushing use cache.
+
 ## 10.3.2 - 2026-10-26
 
 ### Fixed

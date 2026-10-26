@@ -1,9 +1,12 @@
 /*!
  * Copyright (c) 2021-2026 Digital Bazaar, Inc.
  */
-import {OperationUsageCache} from '@bedrock/meter-usage-reporter';
+import {meters, OperationUsageCache} from '@bedrock/meter-usage-reporter';
 
 describe('OperationUsageCache', () => {
+  it('should flush internal cache', async () => {
+    await meters._flushUseCache();
+  });
   it('should insert operation usage records into usageMap', async () => {
     const operationUsageCache = new OperationUsageCache();
 
