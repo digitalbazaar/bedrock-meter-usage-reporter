@@ -1,5 +1,10 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 10.3.2 - 2026-10-dd
+
+### Fixed
+- Ensure remote changes to meter limits are applied locally.
+
 ## 10.3.1 - 2026-10-26
 
 ### Fixed
