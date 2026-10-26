@@ -141,6 +141,7 @@ describe('meters.get()', () => {
     // insert meter
     const {meter: meterInfo} = await meters.upsert({
       id: `${meterService}/${data.meter.id}`,
+      controller,
       serviceType: 'edv'
     });
     const {id: meterId} = meterInfo;
@@ -157,6 +158,7 @@ describe('meters.get()', () => {
     should.exist(res.meter);
     res.meter.should.be.an('object');
     res.meter.id.should.equal(meterId);
+    res.meter.controller.should.equal(controller);
     res.meter.serviceType.should.equal('edv');
     should.exist(res.meter.unreported);
     res.meter.unreported.should.be.an('object');
@@ -192,7 +194,7 @@ describe('meters.hasAvailable()', () => {
       return {storage: 0};
     }});
   });
-  it('checks usage against what is available', async () => {
+  it('checks usage against what is available for new meter', async () => {
     const {id: controller, keys} = getAppIdentity();
     const invocationSigner = keys.capabilityInvocationKey.signer();
 
@@ -204,19 +206,25 @@ describe('meters.hasAvailable()', () => {
       }
     };
     const {data} = await createMeter({meter, invocationSigner});
-    // insert meter
-    const {meter: {id: meterId}} = await meters.upsert({
-      id: `${meterService}/${data.meter.id}`,
-      serviceType: 'webkms',
-      limits: {
-        operations: 180,
-        storage: 150
-      }
+    // do not insert meter, treat as new
+    const meterId = `${meterService}/${data.meter.id}`;
+
+    // stub response from server using limits for meter
+    const {ZCAP_CLIENTS} = meters._getZcapClients();
+    const zcapClient = ZCAP_CLIENTS.get('webkms');
+    const stub = sinon.stub(zcapClient, 'read').callsFake(() => {
+      return {
+        data: {
+          // should get converted to full ID in `hasAvailable()`
+          id: data.meter.id,
+          controller: data.meter.controller,
+          disabled: false,
+          limits: {operations: 180, storage: 150},
+          usage: {operations: 0, storage: 0},
+          serviceId: zcapClient.id
+        }
+      };
     });
-    // add usage
-    const operationUsageCache = new OperationUsageCache();
-    operationUsageCache.use({id: meterId, operations: 20, storage: 10});
-    await operationUsageCache.flush();
 
     // resources to check against what's available
     const resources = {
@@ -233,12 +241,183 @@ describe('meters.hasAvailable()', () => {
       });
     } catch(e) {
       err = e;
+    } finally {
+      stub.restore();
+    }
+    should.not.exist(err);
+    should.exist(res);
+    should.exist(res.meter);
+    res.meter.should.be.an('object');
+    res.meter.id.should.equal(meterId);
+    res.meter.controller.should.equal(controller);
+    const {limits, usage} = res.meter;
+    should.exist(limits);
+    limits.should.be.an('object');
+    limits.should.have.keys(['storage', 'operations']);
+    limits.operations.should.equal(180);
+    limits.storage.should.equal(150);
+    should.exist(usage);
+    usage.should.be.an('object');
+    usage.should.have.keys(['storage', 'operations', 'available']);
+    usage.operations.should.equal(0);
+    usage.storage.should.equal(0);
+    usage.available.should.be.an('object');
+    usage.available.should.have.keys(['storage', 'operations']);
+    usage.available.operations.should.equal(180);
+    usage.available.storage.should.equal(150);
+    should.exist(res.hasAvailable);
+    res.hasAvailable.should.be.a('boolean');
+    res.hasAvailable.should.equal(true);
+  });
+  it('checks usage against what is available for existing meter', async () => {
+    const {id: controller, keys} = getAppIdentity();
+    const invocationSigner = keys.capabilityInvocationKey.signer();
+
+    const meter = {
+      controller,
+      product: {
+        // mock ID for webkms service product
+        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41'
+      },
+      limits: {operations: 180, storage: 150}
+    };
+    const {data} = await createMeter({meter, invocationSigner});
+    // insert meter
+    const {meter: {id: meterId}} = await meters.upsert({
+      id: `${meterService}/${data.meter.id}`,
+      controller,
+      serviceType: 'webkms',
+      limits: {operations: 180, storage: 150}
+    });
+    // add usage
+    const operationUsageCache = new OperationUsageCache();
+    operationUsageCache.use({id: meterId, operations: 20, storage: 10});
+    await operationUsageCache.flush();
+
+    // stub response from server using limits for meter
+    const {ZCAP_CLIENTS} = meters._getZcapClients();
+    const zcapClient = ZCAP_CLIENTS.get('webkms');
+    const stub = sinon.stub(zcapClient, 'read').callsFake(() => {
+      return {
+        data: {
+          // should get converted to full ID in `hasAvailable()`
+          id: data.meter.id,
+          controller: data.meter.controller,
+          disabled: false,
+          limits: {operations: 180, storage: 150},
+          usage: {operations: 0, storage: 0},
+          serviceId: zcapClient.id
+        }
+      };
+    });
+
+    // resources to check against what's available
+    const resources = {
+      operations: 80,
+      storage: 50
+    };
+    let res;
+    let err;
+    try {
+      res = await meters.hasAvailable({
+        id: meterId,
+        serviceType: 'webkms',
+        resources
+      });
+    } catch(e) {
+      err = e;
+    } finally {
+      stub.restore();
     }
     should.exist(res);
     should.not.exist(err);
     should.exist(res.meter);
     res.meter.should.be.an('object');
     res.meter.id.should.equal(meterId);
+    should.exist(res.meter.controller);
+    // should be backfilled by call to `hasAvailable`
+    res.meter.controller.should.equal(controller);
+    const {limits, usage} = res.meter;
+    should.exist(limits);
+    limits.should.be.an('object');
+    limits.should.have.keys(['storage', 'operations']);
+    limits.operations.should.equal(180);
+    limits.storage.should.equal(150);
+    should.exist(usage);
+    usage.should.be.an('object');
+    usage.should.have.keys(['storage', 'operations', 'available']);
+    usage.operations.should.equal(20);
+    usage.storage.should.equal(10);
+    usage.available.should.be.an('object');
+    usage.available.should.have.keys(['storage', 'operations']);
+    usage.available.operations.should.equal(160);
+    usage.available.storage.should.equal(140);
+    should.exist(res.hasAvailable);
+    res.hasAvailable.should.be.a('boolean');
+    res.hasAvailable.should.equal(true);
+  });
+  it('checks usage and backfills controller and limits', async () => {
+    const {id: controller, keys} = getAppIdentity();
+    const invocationSigner = keys.capabilityInvocationKey.signer();
+
+    const meter = {
+      controller,
+      product: {
+        // mock ID for webkms service product
+        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41'
+      },
+      limits: {operations: 180, storage: 150}
+    };
+    const {data} = await createMeter({meter, invocationSigner});
+    // insert meter
+    const {meter: {id: meterId}} = await meters.upsert({
+      id: `${meterService}/${data.meter.id}`,
+      serviceType: 'webkms'
+    });
+
+    // stub response from server using limits for meter
+    const {ZCAP_CLIENTS} = meters._getZcapClients();
+    const zcapClient = ZCAP_CLIENTS.get('webkms');
+    const stub = sinon.stub(zcapClient, 'read').callsFake(() => {
+      return {
+        data: {
+          // should get converted to full ID in `hasAvailable()`
+          id: data.meter.id,
+          controller: data.meter.controller,
+          disabled: false,
+          limits: {operations: 180, storage: 150},
+          usage: {operations: 20, storage: 10},
+          serviceId: zcapClient.id
+        }
+      };
+    });
+
+    // resources to check against what's available
+    const resources = {
+      operations: 80,
+      storage: 50
+    };
+    let res;
+    let err;
+    try {
+      res = await meters.hasAvailable({
+        id: meterId,
+        serviceType: 'webkms',
+        resources
+      });
+    } catch(e) {
+      err = e;
+    } finally {
+      stub.restore();
+    }
+    should.exist(res);
+    should.not.exist(err);
+    should.exist(res.meter);
+    res.meter.should.be.an('object');
+    res.meter.id.should.equal(meterId);
+    should.exist(res.meter.controller);
+    // should be backfilled by call to `hasAvailable`
+    res.meter.controller.should.equal(controller);
     const {limits, usage} = res.meter;
     should.exist(limits);
     limits.should.be.an('object');
@@ -384,9 +563,10 @@ describe('meters.hasAvailable()', () => {
           serviceType: 'edv',
           resources
         });
-        stub.restore();
       } catch(e) {
         err = e;
+      } finally {
+        stub.restore();
       }
       should.exist(err);
       should.not.exist(res);
