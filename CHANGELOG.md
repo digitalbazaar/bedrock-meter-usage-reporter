@@ -1,6 +1,6 @@
 # bedrock-meter-usage-reporter ChangeLog
 
-## 10.3.0 - 2026-mm-dd
+## 10.3.0 - 2026-10-26
 
 ### Added
 - Add local estimates for meter usage to improve performance and enforcement
