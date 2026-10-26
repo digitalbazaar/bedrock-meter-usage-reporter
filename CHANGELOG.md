@@ -1,5 +1,11 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 10.3.1 - 2026-10-dd
+
+### Fixed
+- Ensure meter `controller` is stored and updated (if changed on the remote
+  end).
+
 ## 10.3.0 - 2026-10-26
 
 ### Added
