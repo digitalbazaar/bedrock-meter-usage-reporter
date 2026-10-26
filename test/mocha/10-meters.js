@@ -5,6 +5,7 @@ import * as bedrock from '@bedrock/core';
 import * as database from '@bedrock/mongodb';
 import {cleanDB, createMeter} from '../helpers.js';
 import {AbortController} from 'abort-controller';
+import delay from 'delay';
 import {getAppIdentity} from '@bedrock/app-identity';
 import {meters} from '@bedrock/meter-usage-reporter';
 import sinon from 'sinon';
@@ -366,7 +367,7 @@ describe('meters.hasAvailable()', () => {
         // mock ID for webkms service product
         id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41'
       },
-      limits: {operations: 180, storage: 150}
+      limits: {operations: -1, storage: -1}
     };
     const {data} = await createMeter({meter, invocationSigner});
     // insert meter
@@ -427,15 +428,151 @@ describe('meters.hasAvailable()', () => {
     should.exist(usage);
     usage.should.be.an('object');
     usage.should.have.keys(['storage', 'operations', 'available']);
-    usage.operations.should.equal(20);
-    usage.storage.should.equal(10);
+    // no usage recorded yet
+    usage.operations.should.equal(0);
+    usage.storage.should.equal(0);
     usage.available.should.be.an('object');
     usage.available.should.have.keys(['storage', 'operations']);
-    usage.available.operations.should.equal(160);
-    usage.available.storage.should.equal(140);
+    usage.available.operations.should.equal(180);
+    usage.available.storage.should.equal(150);
     should.exist(res.hasAvailable);
     res.hasAvailable.should.be.a('boolean');
     res.hasAvailable.should.equal(true);
+  });
+  it('checks usage and backfills controller and limits', async () => {
+    const {id: controller, keys} = getAppIdentity();
+    const invocationSigner = keys.capabilityInvocationKey.signer();
+
+    const meter = {
+      controller,
+      product: {
+        // mock ID for webkms service product
+        id: 'urn:uuid:80a82316-e8c2-11eb-9570-10bf48838a41'
+      },
+      limits: {operations: -1, storage: -1}
+    };
+    const {data} = await createMeter({meter, invocationSigner});
+    // insert meter
+    const {meter: {id: meterId}} = await meters.upsert({
+      id: `${meterService}/${data.meter.id}`,
+      controller,
+      serviceType: 'webkms',
+      limits: {operations: -1, storage: -1}
+    });
+
+    // stub response from server using limits for meter
+    const {ZCAP_CLIENTS} = meters._getZcapClients();
+    const zcapClient = ZCAP_CLIENTS.get('webkms');
+    const stub = sinon.stub(zcapClient, 'read').callsFake(() => {
+      return {
+        data: {
+          // should get converted to full ID in `hasAvailable()`
+          id: data.meter.id,
+          controller: data.meter.controller,
+          disabled: false,
+          limits: {operations: 180, storage: 150},
+          usage: {operations: 20, storage: 10},
+          serviceId: zcapClient.id
+        }
+      };
+    });
+
+    // resources to check against what's available
+    const resources = {
+      operations: 80,
+      storage: 50
+    };
+    let res;
+    let err;
+    try {
+      res = await meters.hasAvailable({
+        id: meterId,
+        serviceType: 'webkms',
+        resources
+      });
+    } catch(e) {
+      err = e;
+    } finally {
+      stub.restore();
+    }
+    should.exist(res);
+    should.not.exist(err);
+    should.exist(res.meter);
+    res.meter.should.be.an('object');
+    res.meter.id.should.equal(meterId);
+    should.exist(res.meter.controller);
+    res.meter.controller.should.equal(controller);
+    const {limits, usage} = res.meter;
+    should.exist(limits);
+    limits.should.be.an('object');
+    limits.should.have.keys(['storage', 'operations']);
+    // limits won't have been updated yet
+    limits.operations.should.equal(-1);
+    limits.storage.should.equal(-1);
+    should.exist(usage);
+    usage.should.be.an('object');
+    usage.should.have.keys(['storage', 'operations', 'available']);
+    usage.operations.should.equal(0);
+    usage.storage.should.equal(0);
+    usage.available.should.be.an('object');
+    usage.available.should.have.keys(['storage', 'operations']);
+    // no usage recorded yet
+    usage.available.operations.should.equal(Infinity);
+    usage.available.storage.should.equal(Infinity);
+    should.exist(res.hasAvailable);
+    res.hasAvailable.should.be.a('boolean');
+    res.hasAvailable.should.equal(true);
+
+    // delay and check again -- afterwhich meter limits should be updated
+    await delay(250);
+
+    // resources to check against what's available
+    {
+      const resources = {
+        operations: 80,
+        storage: 50
+      };
+      let res;
+      let err;
+      try {
+        res = await meters.hasAvailable({
+          id: meterId,
+          serviceType: 'webkms',
+          resources
+        });
+      } catch(e) {
+        err = e;
+      } finally {
+        stub.restore();
+      }
+      should.exist(res);
+      should.not.exist(err);
+      should.exist(res.meter);
+      res.meter.should.be.an('object');
+      res.meter.id.should.equal(meterId);
+      should.exist(res.meter.controller);
+      // should be backfilled by call to `hasAvailable`
+      res.meter.controller.should.equal(controller);
+      const {limits, usage} = res.meter;
+      should.exist(limits);
+      limits.should.be.an('object');
+      limits.should.have.keys(['storage', 'operations']);
+      limits.operations.should.equal(180);
+      limits.storage.should.equal(150);
+      should.exist(usage);
+      usage.should.be.an('object');
+      usage.should.have.keys(['storage', 'operations', 'available']);
+      // no usage recorded yet
+      usage.operations.should.equal(0);
+      usage.storage.should.equal(0);
+      usage.available.should.be.an('object');
+      usage.available.should.have.keys(['storage', 'operations']);
+      usage.available.operations.should.equal(180);
+      usage.available.storage.should.equal(150);
+      should.exist(res.hasAvailable);
+      res.hasAvailable.should.be.a('boolean');
+      res.hasAvailable.should.equal(true);
+    }
   });
   it('should throw error on unexpected service type for new meter',
     async () => {
