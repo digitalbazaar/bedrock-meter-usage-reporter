@@ -1,5 +1,13 @@
 # bedrock-meter-usage-reporter ChangeLog
 
+## 10.3.4 - 2026-10-dd
+
+### Fixed
+- Add meter settle period when checking new meters. A new meter might need
+  to have its `controller` adjusted, so until it is no longer considered new
+  (~5 minutes), the `controller` provided via the remote copy of the meter is
+  used for meter checks.
+
 ## 10.3.3 - 2026-10-26
 
 ### Fixed

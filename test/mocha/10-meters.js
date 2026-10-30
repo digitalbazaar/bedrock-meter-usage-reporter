@@ -477,57 +477,8 @@ describe('meters.hasAvailable()', () => {
       };
     });
 
-    // resources to check against what's available
-    const resources = {
-      operations: 80,
-      storage: 50
-    };
-    let res;
-    let err;
     try {
-      res = await meters.hasAvailable({
-        id: meterId,
-        serviceType: 'webkms',
-        resources
-      });
-    } catch(e) {
-      err = e;
-    } finally {
-      stub.restore();
-    }
-    should.exist(res);
-    should.not.exist(err);
-    should.exist(res.meter);
-    res.meter.should.be.an('object');
-    res.meter.id.should.equal(meterId);
-    should.exist(res.meter.controller);
-    res.meter.controller.should.equal(controller);
-    const {limits, usage} = res.meter;
-    should.exist(limits);
-    limits.should.be.an('object');
-    limits.should.have.keys(['storage', 'operations']);
-    // limits won't have been updated yet
-    limits.operations.should.equal(-1);
-    limits.storage.should.equal(-1);
-    should.exist(usage);
-    usage.should.be.an('object');
-    usage.should.have.keys(['storage', 'operations', 'available']);
-    usage.operations.should.equal(0);
-    usage.storage.should.equal(0);
-    usage.available.should.be.an('object');
-    usage.available.should.have.keys(['storage', 'operations']);
-    // no usage recorded yet
-    usage.available.operations.should.equal(Infinity);
-    usage.available.storage.should.equal(Infinity);
-    should.exist(res.hasAvailable);
-    res.hasAvailable.should.be.a('boolean');
-    res.hasAvailable.should.equal(true);
-
-    // delay and check again -- afterwhich meter limits should be updated
-    await delay(250);
-
-    // resources to check against what's available
-    {
+      // resources to check against what's available
       const resources = {
         operations: 80,
         storage: 50
@@ -542,8 +493,6 @@ describe('meters.hasAvailable()', () => {
         });
       } catch(e) {
         err = e;
-      } finally {
-        stub.restore();
       }
       should.exist(res);
       should.not.exist(err);
@@ -551,7 +500,6 @@ describe('meters.hasAvailable()', () => {
       res.meter.should.be.an('object');
       res.meter.id.should.equal(meterId);
       should.exist(res.meter.controller);
-      // should be backfilled by call to `hasAvailable`
       res.meter.controller.should.equal(controller);
       const {limits, usage} = res.meter;
       should.exist(limits);
@@ -562,7 +510,6 @@ describe('meters.hasAvailable()', () => {
       should.exist(usage);
       usage.should.be.an('object');
       usage.should.have.keys(['storage', 'operations', 'available']);
-      // no usage recorded yet
       usage.operations.should.equal(0);
       usage.storage.should.equal(0);
       usage.available.should.be.an('object');
@@ -572,6 +519,57 @@ describe('meters.hasAvailable()', () => {
       should.exist(res.hasAvailable);
       res.hasAvailable.should.be.a('boolean');
       res.hasAvailable.should.equal(true);
+
+      // delay and check again -- afterwhich meter limits should be updated
+      await delay(250);
+
+      // resources to check against what's available
+      {
+        const resources = {
+          operations: 80,
+          storage: 50
+        };
+        let res;
+        let err;
+        try {
+          res = await meters.hasAvailable({
+            id: meterId,
+            serviceType: 'webkms',
+            resources
+          });
+        } catch(e) {
+          err = e;
+        }
+        should.exist(res);
+        should.not.exist(err);
+        should.exist(res.meter);
+        res.meter.should.be.an('object');
+        res.meter.id.should.equal(meterId);
+        should.exist(res.meter.controller);
+        // should be backfilled by call to `hasAvailable`
+        res.meter.controller.should.equal(controller);
+        const {limits, usage} = res.meter;
+        should.exist(limits);
+        limits.should.be.an('object');
+        limits.should.have.keys(['storage', 'operations']);
+        limits.operations.should.equal(180);
+        limits.storage.should.equal(150);
+        should.exist(usage);
+        usage.should.be.an('object');
+        usage.should.have.keys(['storage', 'operations', 'available']);
+        // no usage recorded yet
+        usage.operations.should.equal(0);
+        usage.storage.should.equal(0);
+        usage.available.should.be.an('object');
+        usage.available.should.have.keys(['storage', 'operations']);
+        usage.available.operations.should.equal(180);
+        usage.available.storage.should.equal(150);
+        should.exist(res.hasAvailable);
+        res.hasAvailable.should.be.a('boolean');
+        res.hasAvailable.should.equal(true);
+      }
+    } finally {
+      stub.restore();
     }
   });
   it('should throw error on unexpected service type for new meter',
