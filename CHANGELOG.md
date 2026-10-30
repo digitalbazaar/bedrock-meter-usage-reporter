@@ -1,6 +1,6 @@
 # bedrock-meter-usage-reporter ChangeLog
 
-## 10.3.4 - 2026-10-dd
+## 10.3.4 - 2026-10-29
 
 ### Fixed
 - Add meter settle period when checking new meters. A new meter might need
