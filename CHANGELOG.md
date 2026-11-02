@@ -1,6 +1,6 @@
 # bedrock-meter-usage-reporter ChangeLog
 
-## 10.3.5 - 2026-mm-dd
+## 10.3.5 - 2026-11-02
 
 ### Fixed
 - Improve error handling during meter reporting.
